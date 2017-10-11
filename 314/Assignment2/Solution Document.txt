@@ -1,0 +1,70 @@
+Andrew Letz
+
+2.71 - A) My predecessor (who was fired for incompetence) wasn't far off, the only
+issue with his/her code is the fact that the retrieved byte does not retain its negative value
+if it has a leading 1. 
+
+2.72 - A) The code always succeeds because sizeof(val) returns a value of type
+size_t, which is an unsigned data type. When it is subtracted from maxbytes
+(a signed integer), it casts maxbytes to unsigned and produces an unsigned result,
+which is incapable of being less than 0.
+
+4)
+a.  Can disregard the leading 0s
+We know F = 1111 = 15
+0x0000000F => 15
+
+b. 
+0xFFFFFCE6 => -794
+First we have 111....1111 1100 1110 0110
+Flip all bits: 000....0000 0011 0001 1001
+Add one: 000....0000 0011 0001 1010 = -794
+
+c. 
+0xFFFFFFFF => -1
+First we have 111....1111 1111 1111 1111
+Flip all bits: 000....0000 0000 0000 0000
+Add one: 000....0000 0000 0000 0001 = -1
+
+5)
+a. 
+0x00000000 => 0
+Not sure if this one needs explanation
+
+b. 
+0x41120000 => 9.125
+0 | 100 0001 0|001 0010 0000 0000 0000 0000
+S = 0 (positive)
+E = 130 - 127 = 3
+F = 1.0010010 = 1001.0010 = 9.125
+
+c. 
+0xC39D0000 => -314.0
+1 | 100 0011 1|001 1101 0000 0000 0000 0000
+S = 1 (negative)
+E = 135 - 127 = 8
+F = 1.00111010000 = 100111010.000 = -314.0
+
+6)
+a. 
+-1.0 => 0xBF800000
+0001.0000...
+To get e: 0001.0000... * 2^0
+E = 127 + 0 = 127
+S = 1, E = 127, F = 0000...
+1 | 011 1111 1|000 0000... => 0xBF800000
+
+b. 
+10.5 => 0x41280000
+1010.0101
+To get e: 1010.0101 * 2^3 = 1.0100101
+E = 127 + 3 = 130
+S = 0, E = 130, F = 0101
+0 | 100 0001 0|010 1000... => 0x41280000
+
+c. 
+-85.125 => 0xC2AA4000
+01010101.001
+To get e: 1010101.001 * 2^6 = 1.010101001
+E = 127 + 6 = 133
+1 | 100 0010 1|010 1010 0100... => 0xC2AA4000

@@ -15,5 +15,5 @@ Commands to test:
 	For problem 2.2 (Well formed brackets):
 		python3 brackets.py problem2-2.input
 
-	For problem 2.2 (Well formed brackets):
-		python3 brackets.py problem2-2.input
+	For problem 2.2 (Restaurant Cycler):
+		python3 cycle.py problem2-3.input
