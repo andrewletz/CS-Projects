@@ -1,0 +1,20 @@
+19
+enqueue 1
+enqueue 2
+enqueue 3
+enqueue 4
+enqueue 5
+dequeue 1
+print
+dequeue 2 
+print
+dequeue 3
+print
+enqueue 10
+print
+dequeue 10
+print
+dequeue
+dequeue
+print
+dequeue
