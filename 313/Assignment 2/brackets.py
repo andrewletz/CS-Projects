@@ -2,7 +2,6 @@ import sys
 import stack
 
 def isWellFormed(input_string):
-
     matching = {']' : '[', ')' : '(', '}' : '{', '>' : '<'}
     s = stack.Stack()
 
@@ -12,9 +11,6 @@ def isWellFormed(input_string):
         if c == ']' or c == ')' or c == '}' or c == '>':
             if(matching[c] != s.pop()):
                 return False
-
-    if (not s.is_empty()):
-        return False;
 
     return True; 
 

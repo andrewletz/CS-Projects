@@ -59,10 +59,11 @@ def driver():
                 print("{}".format(value))
             elif action == "dequeue":
                 try:
-                    dequeued = q.dequeue()
+                    #dequeued = q.dequeue()
+                    q.dequeue()
                 except:
                     print("QueueError")
-                else:
+                #else:
                     #print("dequeued {}".format(dequeued))
             elif action == "print":
                 print_queue(q)

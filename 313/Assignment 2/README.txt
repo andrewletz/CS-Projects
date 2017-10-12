@@ -7,6 +7,7 @@ Source files included (.py)
 	- stack.py
 	- queue.py
 	- brackets.py
+	- cycle.py
 
 Commands to test:
 	For problem 2.1 (Max):
@@ -14,6 +15,8 @@ Commands to test:
 	
 	For problem 2.2 (Well formed brackets):
 		python3 brackets.py problem2-2.input
+			(I added a few more test cases in the input file)
 
-	For problem 2.2 (Restaurant Cycler):
+	For problem 2.3 (Restaurant Cycler):
 		python3 cycle.py problem2-3.input
+			(Runs in O(n) time)
