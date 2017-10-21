@@ -1,0 +1,21 @@
+20
+max
+print
+pop
+push -5
+push 0
+max
+pop
+push 1234
+push -2345
+push 1
+max
+push 2
+max
+print
+pop
+pop
+pop
+pop
+max
+print
