@@ -27,12 +27,10 @@ class Minheap:
     def remove(self):
         return heappop(self.t)[0]
 
-    def heapify(self):
-        heapify(self.t)
-
 
 def driver():
     heap = Minheap()
+    
     with open(sys.argv[1]) as f:
         n = int(f.readline().strip())
 

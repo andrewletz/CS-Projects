@@ -1,0 +1,26 @@
+Andrew Letz
+
+1)
+a. (x at %ebp + 8, n at %ebp + 12)
+
+movl 8(%ebp), %esi			Moves x into esi
+movl 12(%ebp), %ebx		Moves n into ebx
+movl $-1, %edi					Sets result to -1
+movl $1, %edx					Sets mask to 1
+.L2: movl %edx, %eax		Moves mask into eax
+andl %esi, %eax				eax = mask & x
+xorl %eax, %edi				result = result ^ (mask & x)
+movl %ebx, %ecx				Moves n into ecx
+shll %ecx, %edx				mask = mask << n
+cmpl $0, %edx					Compares 0 to mask
+jne .L2								If mask != 0, jump to .L2
+movl %edi, %eax				Move result into eax
+
+b.
+int loop(int x, int n) {
+	int result = -1
+	for (int mask = 1 ; mask != 0 ; mask = mask << n) {
+		result ^= (mask & x) ;
+	}
+	return result;
+}
