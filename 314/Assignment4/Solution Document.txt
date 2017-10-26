@@ -50,13 +50,28 @@ c. (check file 2.c)
 3)
 This is compiled with the command gcc 3.c -S -m32 -O1
 _f:
-	movl	4(%esp), %eax 				# moves x (offset by 4 from the stack pointer) into eax
-	leal	(%eax,%eax,2), %eax 		# leal is performing eax = eax + eax * 2
-	ret										# pops the return address from the stack
+	pushl	%ebp				# Push the base pointer on to the stack for later
+	movl	%esp, %ebp			# Assign the value of the stack pointer to the base pointer
+
+	imull	$3, 8(%ebp), %eax	# Multiply the base pointer offset by 8 (input) and store it in eax
+	popl	%ebp				# Pop the base pointer off the stack so it is restored
+	retl						# Return eax to the calling function
 _g:
-	movl	4(%esp), %edx				# moves a into edx from the stack pointer
-	movl	8(%esp), %eax				# moves b into eax from the stack pointer
-	leal	(%eax,%eax,2), %eax		# performs f(b) and stores the result in eax
-	leal	(%edx,%edx,2), %edx		# performs f(a) and stores the result in eax
-	addl	%edx, %eax					# adds the result of the two functions
-	ret 										# pops the return address from the stack
+	pushl	%ebp				# Push the base pointer on to the stack for later
+	movl	%esp, %ebp			# Assign the value of the stack pointer to the base pointer
+	pushl	%edi				# Push the contents of edi onto the stack
+	pushl	%esi				# Push the contents of esi onto the stack
+	subl	$16, %esp			# Make space for local variables on the stack
+	movl	12(%ebp), %edi		# Store 12 offset of the base pointer in edi
+	movl	8(%ebp), %eax		# Store 8 offset of the base pointer in eax
+	movl	%eax, (%esp)		# Make the "top" of the stack eax for the first call to f
+	calll	_f					
+	movl	%eax, %esi			# Put the result of this call into esi
+	movl	%edi, (%esp)		# Make the "top" of the stack edi for the second call to f
+	calll	_f					
+	addl	%esi, %eax			# Add esi (result of first call to f) and eax (result of second call)
+	addl	$16, %esp			# Restore stack by adding the same amount we subl'd at the start
+	popl	%esi				# Pop esi from the stack to restore
+	popl	%edi				# Pop edi from the stack to restore
+	popl	%ebp				# Pop ebp from the stack to restore
+	retl 						# Return eax to the calling function
