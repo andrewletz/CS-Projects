@@ -1,20 +1,22 @@
 Andrew Letz
 
+-*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*-
+
 1)
 a. (x at %ebp + 8, n at %ebp + 12)
 
-movl 8(%ebp), %esi			Moves x into esi
-movl 12(%ebp), %ebx		Moves n into ebx
-movl $-1, %edi					Sets result to -1
-movl $1, %edx					Sets mask to 1
-.L2: movl %edx, %eax		Moves mask into eax
-andl %esi, %eax				eax = mask & x
-xorl %eax, %edi				result = result ^ (mask & x)
-movl %ebx, %ecx				Moves n into ecx
-shll %ecx, %edx				mask = mask << n
-cmpl $0, %edx					Compares 0 to mask
-jne .L2								If mask != 0, jump to .L2
-movl %edi, %eax				Move result into eax
+movl 8(%ebp), %esi			# Moves x into esi
+movl 12(%ebp), %ebx		# Moves n into ebx
+movl $-1, %edi					# Sets result to -1
+movl $1, %edx					# Sets mask to 1
+.L2: movl %edx, %eax		# Moves mask into eax
+andl %esi, %eax				# eax = mask & x
+xorl %eax, %edi				# result = result ^ (mask & x)
+movl %ebx, %ecx				# Moves n into ecx
+shll %ecx, %edx				# mask = mask << n
+cmpl $0, %edx					# Compares 0 to mask
+jne .L2								# If mask != 0, jump to .L2
+movl %edi, %eax				# Move result into eax
 
 b.
 int loop(int x, int n) {
@@ -24,3 +26,37 @@ int loop(int x, int n) {
 	}
 	return result;
 }
+
+-*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*-
+
+2)
+a.
+.L3: 
+movl (%ebx), %eax				# We load whatever is stored at the pointer in %ebx and put it in %eax
+movl (%esi,%ecx,4), %edx	# Put A[i][j] into t 
+movl %eax, (%esi,%ecx,4)	# put whatever was loaded into %eax into A[i][j]
+addl $1, %ecx						# Add 1 to j
+movl %edx, (%ebx)				# Move t into ebx (which we can now see is A[j][i])
+addl $52, %ebx					# We push the pointer over by (52 / 4 = 13) bytes in order to get to the next column
+cmpl %edi, %ecx					# is j < i
+jl .L3									# reloop if above is true
+
+b. M = 52 / 4 = 13
+
+c. (check file 2.c)
+
+-*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*-
+
+3)
+This is compiled with the command gcc 3.c -S -m32 -O1
+_f:
+	movl	4(%esp), %eax 				# moves x (offset by 4 from the stack pointer) into eax
+	leal	(%eax,%eax,2), %eax 		# leal is performing eax = eax + eax * 2
+	ret										# pops the return address from the stack
+_g:
+	movl	4(%esp), %edx				# moves a into edx from the stack pointer
+	movl	8(%esp), %eax				# moves b into eax from the stack pointer
+	leal	(%eax,%eax,2), %eax		# performs f(b) and stores the result in eax
+	leal	(%edx,%edx,2), %edx		# performs f(a) and stores the result in eax
+	addl	%edx, %eax					# adds the result of the two functions
+	ret 										# pops the return address from the stack
