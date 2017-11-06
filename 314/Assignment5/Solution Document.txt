@@ -1,0 +1,28 @@
+Andrew Letz
+
+-*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*-
+3)
+Computations required to perform an iaddl (immediate to register) instruction:
+
+Fetch:
+icode:ifun <- M_1[PC]		# Get our instruction code and function
+rA:rB <- M_1[PC + 1]		# Get our registers
+valC <- M_4[PC + 2]			# Get the constant value V
+valP <- PC + 6					# Address of next instruction to set the PC later
+
+Decode:
+valB <- R[rB]					# Get the value in the register
+
+Execute:
+valE <- valB + valC 			# Put the result of (constant V + value in register) in valE
+Set CC 								# Set the condition codes (ZF, SF and OF)
+
+Memory:
+
+Write back:
+R[rB] <- valE						# Set the register to the result of the computation
+
+PC Update:
+PC <- valP							# Set the program counter to the next instruction
+
+-*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*-

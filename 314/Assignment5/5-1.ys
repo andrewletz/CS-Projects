@@ -1,0 +1,47 @@
+.pos 0x100
+Stack:
+
+.pos 0x120      # put the array a little ways away from the stack
+.align 4
+array:
+	.long 0x1111    # values to swap
+	.long 0x9999
+
+.pos 0
+Init:
+    irmovl Stack, %ebp
+    irmovl Stack, %esp
+    call Main
+    halt
+
+swap:
+	pushl %ebp              # prologue
+	rrmovl %esp, %ebp
+    
+	mrmovl 8(%ebp), %eax    # store pointer at 8 offset %ebp in %eax
+	mrmovl (%eax), %edx     # store dereferenced value in %edx
+	mrmovl 12(%ebp), %ecx   # store pointer at 12 offset %ebp in %ecx
+	mrmovl (%ecx), %ebx     # store dereferenced value in %ebx
+	rmmovl %edx, (%ecx)     # move %edx into pointer location given by %ecx
+	rmmovl %ebx, (%eax)     # move %ebx into pointer location given by %eax
+	
+	popl %ebp
+	ret                     # epilogue
+
+Main:
+	pushl %ebp
+	rrmovl %esp, %ebp
+	pushl %ebx
+
+    irmovl array, %eax      # put pointer to start of array in %eax
+    pushl %eax              # first arg for call
+    irmovl $4, %ebx
+    addl %ebx, %eax         # annoying way to get second pointer in array
+    pushl %eax              # second arg
+    call swap
+    
+    rrmovl %ebp, %esp       # restore stack
+    
+    popl %ebx               # we used ebx as a temp register so restore that
+	popl %ebp
+	ret
