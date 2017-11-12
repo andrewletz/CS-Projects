@@ -1,0 +1,121 @@
+.pos 0
+Init:
+	irmovl Stack, %ebp
+	irmovl Stack, %esp
+	call Main
+	halt
+
+.pos 0x100
+Stack:
+
+.pos 0x104
+array: # Hardcoded array of 10 entries
+	.long 0x10
+	.long 0x9
+	.long 0x3
+	.long 0x7
+	.long 0x15
+	.long 0x5
+	.long 0x4
+	.long 0x8
+	.long 0x2
+	.long 0x1
+
+swap: # Swap procedure from assignment 5
+	pushl %ebp
+	rrmovl %esp, %ebp
+	pushl %ebx
+    
+	mrmovl 8(%ebp), %eax
+	mrmovl (%eax), %edx
+	mrmovl 12(%ebp), %ecx
+	mrmovl (%ecx), %ebx
+	rmmovl %edx, (%ecx)
+	rmmovl %ebx, (%eax)
+	
+	popl %ebx
+	popl %ebp
+	ret
+
+findMin: # int* findMin(int* arr, int length), from Zach's lab
+	pushl %ebp
+	rrmovl %esp, %ebp
+	pushl %esi
+	pushl %ebx
+	mrmovl 8(%ebp), %ecx
+	mrmovl 12(%ebp), %edx
+	
+	rrmovl %ecx, %eax # assume first el is minimum to start
+	irmovl $4, %ebx # were going to need to add 4 to iterate over array
+	irmovl $1, %esi # for loop subtraction
+	subl %esi, %edx # prime the loop so it doesn’t go over by one
+	
+	loop:
+		addl %ebx, %ecx
+		pushl %ecx # save these on the stack for now
+		pushl %eax
+		mrmovl (%ecx), %ecx # instead of holding address, we hold a[1]
+		mrmovl (%eax), %eax # holds a[0]
+		subl %eax, %ecx # want to update eax, if ecx<eax (negative if false)
+		popl %eax # make them memory addresses again before we jump
+		popl %ecx
+		jge dontUpdate
+		rrmovl %ecx, %eax # update our new min
+		dontUpdate: # if there are still more elements in the array, keep going
+			subl %esi, %edx # take one from our length (we stored it in edx)
+			jg loop # we only want to go back if we have more el in the arr
+	
+	popl %ebx # have to restore callee save registers if we use them
+	popl %esi
+	popl %ebp
+	ret
+	
+selSort: #void selSort(int* arr, int length)
+    pushl %ebp
+	rrmovl %esp, %ebp
+	pushl %esi
+	pushl %ebx
+	
+	mrmovl 8(%ebp), %ecx # arr pointer
+	mrmovl 12(%ebp), %edx # length of arr
+	
+	irmovl $4, %ebx # for iteration
+	irmovl $1, %esi # for subtraction
+	
+	selLoop:
+    	pushl %edx
+    	pushl %ecx
+    	call findMin # find the min on our current slice of the array
+    	popl %ecx
+    	popl %edx
+    	
+    	pushl %edx # this really made me understand caller save
+    	pushl %ecx
+    	pushl %eax
+    	call swap # swap min and current start of array slice
+    	popl %eax
+    	popl %ecx
+    	popl %edx # ^^
+	
+    	addl %ebx, %ecx # increment our array slice by 1 index (4 bytes)
+    	subl %esi, %edx # decrement our length
+    	jg selLoop # if the length isn't 0
+	
+	popl %esi
+	popl %ebx
+	popl %ebp
+	ret
+
+Main:
+    pushl %ebp
+	rrmovl %esp, %ebp
+
+    irmovl $10, %eax # get length (hardcoded)	
+    pushl %eax
+    irmovl array, %eax
+    pushl %eax
+    call selSort # call selSort with len 10, pointer to array
+	
+    rrmovl %ebp, %esp # restore stack
+    popl %ebp
+    ret

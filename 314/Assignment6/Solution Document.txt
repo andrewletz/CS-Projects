@@ -1,0 +1,27 @@
+Andrew Letz
+
+-*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*_*-*-
+2)
+addl %edx, %eax
+mrmovl 0(%ecx), %edx
+addl %edx, %eax
+
+Without forwarding:
+F D E M W (addl %edx, %eax) # edx is done being added to eax after the execute stage so we 
+  F D E M W (mrmovl 0(%ecx), %edx) # dont have to stall before moving a new value in
+    S T A L L (nop)
+	  S T A L L (nop)
+		S T A L L (nop)
+          F D E M W (addl %edx, %eax)
+		  # Now we fetch after both writebacks have been completed
+This requires 3 stalls.
+		  
+With forwarding:
+1 2 3 4 5 6 7
+F D E M W (addl %edx, %eax)
+  F D E M W (mrmovl 0(%ecx), %edx) # Load/use data hazard
+	S T A L L
+      F D E M W (addl %edx, %eax)
+This requires 1 stall due to a load/use data hazard. This allows for valA to be
+forwarded from the mrmovl instruction during the memory stage (cycle 5).
+  
