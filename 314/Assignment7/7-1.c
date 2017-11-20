@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <sys/time.h>
 
 /*
  * Andrew Letz, November 18th 2017
@@ -74,4 +76,40 @@ int main(void)
 	float destSum4 = 0;
 	inner2(vec3, vec4, 7, &destSum4);
 	printf("\n 	> Sum is %f", destSum4);
+
+	printf("\n");
+	int size = 400000;
+	float giantvec[size];
+	for (int i = 0; i < size; i++) {
+		giantvec[i] = ((float)rand()/(float)(RAND_MAX)) * 10;
+	}
+
+	// Testing inner without unrolling
+	struct timeval start;
+	gettimeofday(&start, NULL);
+
+	printf("\nDoing 10,000 elements without loop unrolling:");
+	float destSum5 = 0;
+	inner(giantvec, giantvec, size, &destSum5);
+	printf("\n 	> Sum is %f", destSum5);
+
+	struct timeval current;
+	gettimeofday(&current, NULL);
+	long long elapsed = (current.tv_sec - start.tv_sec)*1000000LL + (current.tv_usec - start.tv_usec);
+	printf("\nTime elapsed without loop unrolling for 400,000 elements: %f\n", elapsed/1000000.0);
+
+	// Testing inner with unrolling
+	struct timeval start2;
+	gettimeofday(&start2, NULL);
+
+	printf("\nDoing 10,000 elements with loop unrolling:");
+	float destSum6 = 0;
+	inner2(giantvec, giantvec, size, &destSum6);
+	printf("\n 	> Sum is %f", destSum6);
+
+	struct timeval current2;
+	gettimeofday(&current2, NULL);
+	long long elapsed2 = (current2.tv_sec - start2.tv_sec)*1000000LL + (current2.tv_usec - start2.tv_usec);
+	printf("\nTime elapsed with 4-way loop unrolling for 400,000 elements: %f\n", elapsed2/1000000.0);
+
 }

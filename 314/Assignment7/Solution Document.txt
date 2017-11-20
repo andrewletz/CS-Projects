@@ -5,7 +5,13 @@ Andrew Letz
 Diagrams are located in 7-1.png
 
 2)
-In this example, we can pipeline the the loads, but we can't pipeline the mul and add because they depend on 
-values from the previous iteration (sum in %xmml and the index stored in %rdx).
-The critical path here follows through the float multiplication (CPE of 5) which is then float-added to 
-the previous sum (CPE of 3). This means that the lower latency bound in terms of CPE is 5 + 3 = 8 cycles.
+In this example, we can pipeline the the loads and mult, but we can't pipeline the add because it depends on 
+values from the previous iteration (sum in %xmml).
+The critical path here follows through the float multiplication (CPE disregarded due to pipelining) which is then float-added to 
+the previous sum (CPE of 3). This means that the lower latency bound in terms of CPE is 3 cycles.
+
+4)
+Looking at the data, the 4 way loop unrolled version of this loop works an average of 1.3x faster than the 
+standard loop, ranging from 1.1x to 1.8x times faster depending on the number of elements. I assume this would
+get even larger in difference if the number of elements went into the billions (or more).
+Graph is located in 7-4.png
