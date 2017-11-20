@@ -1,13 +1,18 @@
 import sys
 
+class Nil:
+
+    def __init__(self):
+        self.color = "B"
+
 class Node:
 
     def __init__(self, key):
         self.color = "B"
         self.key = key
-        self.left = None
-        self.right = None
-        self.p = None
+        self.left = Nil()
+        self.right = Nil()
+        self.p = Nil()
 
     def __str__(self):
         # debug formatting
@@ -110,8 +115,11 @@ class RB:
 
     # If the key X is present, removes a node having key X from the tree (logn)
     def remove(self, key):
-        z = self.search_return(key)
-        if (z == None):
+        if (self.root == self.nil):
+            print("TreeError")
+            return
+        z = self.search_return(self.root, key)
+        if (z == self.nil):
             print("TreeError")
             return
         y = z
@@ -170,7 +178,7 @@ class RB:
                 w.right.color = "B"
                 self.left_rotate(x.p)
                 x = self.root
-            elif (x == x.p.right):
+            else:
                 w = x.p.left
                 if (w.color == "R"):
                     w.color = "B"
@@ -180,11 +188,12 @@ class RB:
                 if (w.right.color == "B" and w.left.color == "B"):
                     w.color = "R"
                     x = x.p
-                elif (w.left.color == "B"):
-                    w.right.color = "B"
-                    w.color = "R"
-                    self.left_rotate(w)
-                    w = x.p.left
+                else:
+                    if (w.left.color == "B"):
+                        w.right.color = "B"
+                        w.color = "R"
+                        self.left_rotate(w)
+                        w = x.p.left
                 w.color = x.p.color
                 x.p.color = "B"
                 w.left.color = "B"
@@ -192,16 +201,13 @@ class RB:
                 x = self.root
         x.color = "B"
 
-    def search_return(self, key): # returns the found node if it exists
-        current = self.root
-        while (current != self.nil):
-            if (key == current.key):
-                return current
-            elif (key < current.key):
-                current = current.left # descend left if our key is smaller
-            else: # descend right if it isn't
-                current = current.right
-        return None
+    def search_return(self, x, key): # returns the found node if it exists
+        while (x != self.nil) and (key != x.key):
+            if key < x.key:
+                x = x.left
+            else:
+                x = x.right
+        return x
 
     # Returns a boolean indicating whether the key X is present (logn)
     def search(self, key):
@@ -222,10 +228,9 @@ class RB:
             return "Empty"
         if (node == None):
             node = self.root
-        currentNode = node
-        while (currentNode.right != self.nil): # keep descending right until we hit a leaf
-            currentNode = currentNode.right
-        return currentNode
+        while (node.right != self.nil): # keep descending right until we hit a leaf
+            node = node.right
+        return node
 
     # Returns an integer, the smallest key in the tree. Does not alter the tree (logn)
     # Default is smallest in entire tree, can also return min of subtree rooted at node
@@ -234,24 +239,24 @@ class RB:
             return "Empty"
         if (node == None):
             node = self.root
-        currentNode = node
-        while (currentNode.left != self.nil): # keep descending left until we hit a leaf
-            currentNode = currentNode.left
-        return currentNode
+        while (node.left != self.nil): # keep descending left until we hit a leaf
+            node = node.left
+        return node
 
     def isEmpty(self):
-        if (self.root == self.nil):
+        if (self.root == None or self.root == self.nil):
             return True
         return False
 
 # Runtime O(n), in-order traversal representation
 # Returns a list, approved by Andrew on Piazza
 def print_tree(root_node, lst):
-    if (root_node):
-        print_tree(root_node.left, lst)
-        if (root_node.key != None):
-            lst.append(root_node.key)
-        print_tree(root_node.right, lst)
+    if (root_node == None or type(root_node) == Nil or root_node == Node(None)):
+        return
+    print_tree(root_node.left, lst)
+    if (root_node.key != None):
+        lst.append(root_node.key)
+    print_tree(root_node.right, lst)
     return lst
 
 def driver():
@@ -259,10 +264,10 @@ def driver():
     
     with open(sys.argv[1]) as f:
         n = int(f.readline().strip())
-        linecount = 0
+        #linecount = 0
         for _ in range(n):
-            linecount += 1
-            #print(linecount)
+            #linecount += 1
+            #print("LC: {}".format(linecount))
             in_data = f.readline().strip().split()
             if (len(in_data) == 1):
                 if(in_data[0] == "max"):
