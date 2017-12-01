@@ -25,6 +25,12 @@ void printValues(block* cache) {
 	}
 } 
 
+int getSet(unsigned int address) {
+	address <<= 26;
+	address >>= 28;
+	return address
+}
+
 int main(void)
 {
 	// char input;
@@ -46,17 +52,22 @@ int main(void)
 		scanf(" %c", &input);
 
 		switch(input) {
-			case 'q':
-				run = 0;
+			case 'w':
+				unsigned int address;
+				printf("Enter 32-bit unsigned hex address: \n");
+				scanf(" %x", address);
+				unsigned int value;
+				printf("Enter 32-bit unsigned hex value: \n");
+				scanf(" %x", value);
 				break;
 			case 'r':
-				run = 1;
-				break;
-			case 'w':
-				run = 0;
+				
 				break;
 			case 'p':
 				printValues(cache);
+				break;
+			case 'q':
+				run = 0;
 				break;
 		}
 
