@@ -1,0 +1,20 @@
+Andrew Letz
+
+1)
+Number of bytes taken up by struct point_color square[16][16]:
+	16 * 16 point colors = 256 point colors
+	256 * 4 integer objects = 1024 integer objects
+	4 bytes per integer * 1024 integer objects = 4096 bytes
+	The square therefore takes up 4096 bytes of space starting at address 0.\
+
+a. The total number of memory writes will be (16 x 16) x 4 = 1024 as for each iteration of the loop
+4 variables are being written to. This corresponds to the 1024 integer objects that exist in square.
+
+b. On each iteration of the loop, we load in the 16 byte long point_color into the cache after an initial miss.
+This miss is because the cache begins empty, so when we try to find square[0][0] for example, both the valid bit
+and tag bit will not match.
+After retrieving this point_color from outer memory, however, the next three integers (m, y and k) will be loaded
+into the cache resulting in 3 consecutive hits. This means that 1 out of 4 point color integer writes will be a 
+miss, resulting in (1/4)(1024) = 256 misses.
+
+c. The miss rate is 25% (1/4 integers).
