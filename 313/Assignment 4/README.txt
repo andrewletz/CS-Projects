@@ -6,4 +6,4 @@ Source files included (.py)
 	- problem1.py
 
 Commands to test:
-	python3 problem1.py problem1.input
+	python3 problem1.py test1.input

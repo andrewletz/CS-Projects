@@ -6,14 +6,16 @@ class Nil:
     def __init__(self):
         self.color = "B"
 
+NIL = Nil()
+
 class Node:
 
-    def __init__(self, key):
+    def __init__(self, key, left=NIL, right=NIL, p=NIL):
         self.color = "B"
         self.key = key
-        self.left = Nil()
-        self.right = Nil()
-        self.p = Nil()
+        self.left = left
+        self.right = right
+        self.p = p
 
     def __str__(self):
         # debug formatting
@@ -24,18 +26,17 @@ class Node:
 class RB:
 
     def __init__(self):
-        self.nil = Node(None)
-        self.root = self.nil
+        self.root = NIL
 
     # Left rotate and right rotate are needed for both insert
     # and delete, so we implement them first
     def left_rotate(self, x):
         y = x.right
         x.right = y.left
-        if (y.left != self.nil):
+        if (y.left != NIL):
             y.left.p = x
         y.p = x.p
-        if (x.p == self.nil):
+        if (x.p == NIL):
             self.root = y
         elif (x == x.p.left):
             x.p.left = y
@@ -47,10 +48,10 @@ class RB:
     def right_rotate(self, x):
         y = x.left # replace all instances of left  
         x.left = y.right # with right and vice versa
-        if (y.right != self.nil):
+        if (y.right != NIL):
             y.right.p = x
         y.p = x.p
-        if (x.p == self.nil):
+        if (x.p == NIL):
             self.root = y
         elif (x == x.p.right):
             x.p.right = y
@@ -62,23 +63,23 @@ class RB:
     # Inserts a node into the tree having key X (logn)
     def insert(self, key):
         z = Node(key)
-        y = self.nil
+        y = NIL
         x = self.root
-        while (x != self.nil):
+        while (x != NIL):
             y = x
             if (z.key < x.key):
                 x = x.left
             else:
                 x = x.right
         z.p = y
-        if (y == self.nil):
+        if (y == NIL):
             self.root = z
         elif (z.key < y.key):
             y.left = z
         else:
             y.right = z
-        z.left = self.nil
-        z.right = self.nil
+        z.left = NIL
+        z.right = NIL
         z.color = "R"
         self.insert_fixup(z)
 
@@ -116,19 +117,19 @@ class RB:
 
     # If the key X is present, removes a node having key X from the tree (logn)
     def remove(self, key):
-        if (self.root == self.nil):
+        if (self.root == NIL):
             print("TreeError")
             return
         z = self.search_return(self.root, key)
-        if (z == self.nil):
+        if (z == NIL):
             print("TreeError")
             return
         y = z
         y_og = y.color
-        if (z.left == self.nil):
+        if (z.left == NIL):
             x = z.right
             self.transplant(z, z.right)
-        elif (z.right == self.nil):
+        elif (z.right == NIL):
             x = z.left
             self.transplant(z, z.left)
         else:
@@ -149,7 +150,7 @@ class RB:
             self.remove_fixup(x)
 
     def transplant(self, u, v):
-        if (u.p == self.nil):
+        if (u.p == NIL):
             self.root = v
         elif (u == u.p.left):
             u.p.left = v
@@ -169,16 +170,17 @@ class RB:
                 if (w.left.color == "B" and w.right.color == "B"):
                     w.color = "R"
                     x = x.p
-                elif (w.right.color == "B"):
-                    w.left.color = "B"
-                    w.color = "R"
-                    self.right_rotate(w)
-                    w = x.p.right
-                w.color = x.p.color
-                x.p.color = "B"
-                w.right.color = "B"
-                self.left_rotate(x.p)
-                x = self.root
+                else:
+                    if (w.right.color == "B"):
+                        w.left.color = "B"
+                        w.color = "R"
+                        self.right_rotate(w)
+                        w = x.p.right
+                    w.color = x.p.color
+                    x.p.color = "B"
+                    w.right.color = "B"
+                    self.left_rotate(x.p)
+                    x = self.root
             else:
                 w = x.p.left
                 if (w.color == "R"):
@@ -195,15 +197,15 @@ class RB:
                         w.color = "R"
                         self.left_rotate(w)
                         w = x.p.left
-                w.color = x.p.color
-                x.p.color = "B"
-                w.left.color = "B"
-                self.right_rotate(x.p)
-                x = self.root
+                    w.color = x.p.color
+                    x.p.color = "B"
+                    w.left.color = "B"
+                    self.right_rotate(x.p)
+                    x = self.root
         x.color = "B"
 
     def search_return(self, x, key): # returns the found node if it exists
-        while (x != self.nil) and (key != x.key):
+        while (x != NIL) and (key != x.key):
             if key < x.key:
                 x = x.left
             else:
@@ -213,7 +215,7 @@ class RB:
     # Returns a boolean indicating whether the key X is present (logn)
     def search(self, key):
         current = self.root
-        while (current != self.nil):
+        while (current != NIL):
             if (key == current.key):
                 return True
             elif (key < current.key):
@@ -225,27 +227,27 @@ class RB:
     # Returns an integer, the largest key in the tree. Does not alter the tree (logn)
     # Default is largest in entire tree, can also return max of subtree rooted at node
     def maximum(self, node=None):
-        if (self.root == self.nil):
+        if (self.root == NIL):
             return "Empty"
         if (node == None):
             node = self.root
-        while (node.right != self.nil): # keep descending right until we hit a leaf
+        while (node.right != NIL): # keep descending right until we hit a leaf
             node = node.right
         return node
 
     # Returns an integer, the smallest key in the tree. Does not alter the tree (logn)
     # Default is smallest in entire tree, can also return min of subtree rooted at node
     def minimum(self, node=None):
-        if (self.root == self.nil):
+        if (self.root == NIL):
             return "Empty"
         if (node == None):
             node = self.root
-        while (node.left != self.nil): # keep descending left until we hit a leaf
+        while (node.left != NIL): # keep descending left until we hit a leaf
             node = node.left
         return node
 
     def isEmpty(self):
-        if (self.root == None or self.root == self.nil):
+        if (self.root == None or self.root == NIL):
             return True
         return False
 
