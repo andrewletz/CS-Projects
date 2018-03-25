@@ -1,0 +1,61 @@
+package Main;
+
+import java.io.BufferedReader;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.net.Socket;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.Scanner;
+
+public class Client {
+	
+	public static void main(String[] args) throws UnknownHostException, IOException {
+		Socket client = new Socket("localhost", 11111);
+		ArrayList<Integer> intList = new ArrayList<Integer>();
+		ArrayList<Integer> receivedInts = new ArrayList<Integer>();
+		Scanner sc = new Scanner(System.in);
+
+		BufferedReader in = new BufferedReader(
+                new InputStreamReader(client.getInputStream()));
+		PrintWriter out = new PrintWriter(client.getOutputStream(), true);
+		
+		System.out.println("Enter an integer (\"!\" to send)");
+		boolean running = true;
+		while (running) {
+			String nextInput = sc.next();
+			switch (nextInput) {
+			case "!":
+				running = false;
+				sc.close();
+				break;
+			default:
+				intList.add(Integer.parseInt(nextInput));
+				out.println(nextInput);
+				String response = in.readLine();
+				receivedInts.add(Integer.parseInt(response));
+				System.out.println("Enter an integer (\"!\" to send)");
+				break;
+			}
+		}
+        
+		System.out.println("\nIntegers sent to the server:");
+		for(int i : intList) {
+			System.out.print(i + " ");
+		}
+		
+		System.out.println("\nIntegers received from the server:");
+		for(int i : receivedInts) {
+			System.out.print(i + " ");
+		}
+		
+        client.close();
+		System.exit(1);
+	}
+
+}

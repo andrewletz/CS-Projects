@@ -1,0 +1,60 @@
+package Main;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.ServerSocket;
+import java.net.Socket;
+
+public class Server {
+	private static final int PORT = 1337;
+	
+	public static void main(String[] args) {		
+		System.out.println("running server!");
+		
+		ServerSocket serverSocket = null;
+		Socket socket = null;
+		ObjectOutputStream outputStream = null;
+		ObjectInputStream inputStream = null;		
+		try {
+			serverSocket = new ServerSocket(PORT);
+			
+			System.out.println("server socket created");
+			
+			socket = serverSocket.accept();
+			
+			System.out.println("got socket: " + socket);
+			
+			// Always flush an object output stream preemptively (see docs).
+			outputStream = new ObjectOutputStream(socket.getOutputStream());
+			outputStream.flush();
+			
+			inputStream = new ObjectInputStream(socket.getInputStream());
+
+			outputStream.writeUTF("You've got mail!");
+			outputStream.flush();
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		} finally {
+			// Close resources in finally block so that they
+			// get closed even if we hit an exception above.
+			try {
+				if (serverSocket != null) {
+					serverSocket.close();
+				}
+				if (socket != null) {
+					socket.close();
+				}
+				if (outputStream != null) {
+					outputStream.close();
+				}
+				if (inputStream != null) {
+					inputStream.close();
+				}
+			} catch (IOException ex) {
+				ex.printStackTrace();
+			}
+		}
+		
+		System.out.println("server finished");
+	}
+}

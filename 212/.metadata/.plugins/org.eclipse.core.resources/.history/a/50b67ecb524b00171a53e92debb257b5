@@ -1,0 +1,54 @@
+package Main;
+
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.Socket;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.Scanner;
+
+public class Client {
+	
+	public static void main(String[] args) throws UnknownHostException, IOException {
+		Socket client = new Socket("localhost", 11111);
+		ArrayList<Integer> intList = new ArrayList<Integer>();
+		Scanner sc = new Scanner(System.in);
+
+		System.out.println("Enter an integer (\"!\" to send)");
+		boolean running = true;
+		while (running) {
+			String nextInput = sc.next();
+			switch (nextInput) {
+			case "!":
+				running = false;
+				sc.close();
+				break;
+			default:
+				intList.add(Integer.parseInt(nextInput));
+				System.out.println("Enter an integer (\"!\" to send)");
+				break;
+			}
+		}
+		
+        OutputStream outToServer = client.getOutputStream();
+        DataOutputStream out = new DataOutputStream(outToServer);
+        
+        InputStream inFromServer = client.getInputStream();
+        DataInputStream in = new DataInputStream(inFromServer);
+        
+		System.out.println("\nIntegers sent to the server:");
+		for(int i : intList) {
+			System.out.print(i + " ");
+			out.writeInt(i);
+		}
+        
+        System.out.println("Server says " + in.readUTF());
+        client.close();
+		
+		System.exit(1);
+	}
+
+}
