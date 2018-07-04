@@ -1,0 +1,11 @@
+CIS 415 Project 0
+Author: Andrew Letz
+Duck ID: aletz
+Duck #: 951526623
+
+My current solution appears to be fully functional.
+May be a bit on the slow side due to the use of recursion for inorder
+searches in the BST, but should run within reasonable time.
+Included a few helper functions in my tldmap implementation.
+
+Credit given to Cormen's Intro to Algorithms 3rd edition for BST pseudo-implementation, and Dr. Sventek for his queue and stack ADTs as outlines. Also utilized IBMs <strings.h> library for case insensitive string compare.

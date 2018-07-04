@@ -1,0 +1,29 @@
+CIS 415 Project 2
+Author: Andrew Letz
+Duck ID: aletz
+Duck #: 951526623
+
+Credit/acknowledgement of assistance:
+- Followed instruction from Roscoe Casita (no actual code provided however)
+- Used Dr. Sventek and Peter Dickmans base classes and guidance
+- Ethan Quick provided several high-level concept clarifications, but
+no actual code at any point
+
+Report:
+I ran the final version for over 20 minutes with no packet leaks. It wobbles around
+24 out, 12 free for most of execution.
+The requested diagrams are included in PDF format along with their explanations.
+
+The calculations for buffer sizing is as follows:
+|SQ| = size of send queue
+|P| = size of pool
+sum(|BB|) = sum of sizes of application BBs
+x = |SQ| + |P| + sum(|BB|)
+if size(FPDS) / 2 <= x <= size(FPDS), then
+
+To keep the most packet descriptors out at once without having 0 free, I chose an x value of sizeof(FPDS).
+The pool (cache) should be small in comparison to the FPDS, so a value of (2/10) of x seems reasonable.
+The send queue and application bounded buffers can be split evenly between the rest of the space, meaning each receives (4/10)s of x (which is (4/10)s the size of the FPDS).
+This means each application BB will receive approximately 3.6% of the FPDS each (with 11 applications).
+
+This can be seen implemented in the init function where each BB is assigned a size.

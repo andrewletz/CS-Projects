@@ -1,0 +1,36 @@
+CIS 415 Project 1
+Author: Andrew Letz
+Duck ID: aletz
+Duck #: 951526623
+
+Credit/acknowledgement of assistance:
+- Several functions provided by Roscoe Casita
+	- These specific credits can be found in respective source files
+- Several functions from Elegant C Programming, guidance from Dr. Sventek's
+Piazza posts and lectures
+- Ethan Quick provided several high-level concept clarifications, but
+no actual code at any point
+
+Report:
+Notes: several abstractions have been made to different files.
+uspsfxns: Includes things such as readin, donanosleep, getwordcount, etc.
+	that are used by all usps versions. Also includes all #includes. (hehe)
+pcontrol: Linked list implementation and wrapper designed for this project.
+p1fxns: Provided by Dr. Sventek, used on numerous occasions.
+Makefile: Should compile all my code correctly.
+
+Status of each usps:
+uspsv1: This works 100% as intended. All input cases have
+been tested, and no memory leaks have been found in the final version.
+
+uspsv2: code state is the same as uspsv1.
+
+uspsv3: code state is the same as uspsv1&2.
+Implemented using 2 LLs (ready queue and exited), and one free Pcb pointer.
+No frees/mallocs inside of sigalarm.
+
+uspsv4: code state is the same as uspsv1&2&3.
+Shares all code with uspsv3 apart from the proc printing function.
+
+I tried to include good documentation for every function, and much of the code.
+test_script.sh was ran against my final versions several times without issue.
