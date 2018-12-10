@@ -2,7 +2,7 @@
 
 ### CS 415: Operating Systems
 
-Called the hardest class in undergrad. After these projects, I can say I am "good" at C: 
+Summary of the main projects in operating systems (all in C):
 * created a searchable map structure with an iterator for top level domains, using ADTs in C. Implemented as a BST.
 * created a user-space-process-scheduler: took either a file or cmd-line input to load in a list of commands to be executed in a round robin style execution. Found information about these processes from the /proc file system.
 * built a PThread based network driver (simulated) for handling packets.
