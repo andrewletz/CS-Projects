@@ -1,5 +1,15 @@
 # CS-Projects
 
+### CS 461: Compiler Construction
+
+### CS 441: Graphics
+
+### CS 433: Computer and Network Security
+
+### CS 425: Programming Languages
+
+### CS 422: Software Methodologies
+
 ### CS 415: Operating Systems
 
 Summary of the main projects in operating systems (all in C):
@@ -7,6 +17,8 @@ Summary of the main projects in operating systems (all in C):
 * created a user-space-process-scheduler: took either a file or cmd-line input to load in a list of commands to be executed in a round robin style execution. Found information about these processes from the /proc file system.
 * built a PThread based network driver (simulated) for handling packets.
 Throughout these all, used debugging tools like Valgrind (for memory leaks) and gdb (for everything else).
+
+### CS 399: Data Science
 
 ### CS 330: C/C++ & Unix
 
